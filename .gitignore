@@ -1,0 +1,91 @@
+# ============================
+# Python
+# ============================
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Herramientas de testing / linters
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Variables de entorno / secretos
+.env
+.env.*
+
+# ============================
+# R
+# ============================
+
+# Historial y workspace de R
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+
+# Archivos temporales de RStudio
+.Rproj.user/
+
+# Archivos de sesión
+*.Rproj
+
+# Paquetes compilados
+*.o
+*.so
+*.dll
+
+# Salidas de knitr / R Markdown
+*_cache/
+*_files/
+
+# renv (gestor de dependencias de R)
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/staging/
+
+# packrat (otro gestor de dependencias, por si acaso)
+packrat/lib*/
+packrat/src/
+
+# ============================
+# Datos y archivos pesados (opcional, descomenta si aplica)
+# ============================
+# *.csv
+# *.rds
+# *.rda
+# data/raw/
+
+# ============================
+# Sistema operativo / editores
+# ============================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
