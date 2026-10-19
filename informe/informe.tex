@@ -1,0 +1,481 @@
+% ====================================================================
+% Proyecto Final de Estadística - Puntos 5, 6 y 7
+% Fórmulas usadas EXCLUSIVAMENTE de:
+%   [F] "Formulario de Probabilidad y Estadística" (J. D. Fuentes Mora)
+%   [T] "Tabla 4: Áreas de curva normal" (R. E. Walpole) - P(Z > z)
+% Cálculos realizados con R (R/calculos/parametros.R).
+% Compilar con: tectonic informe.tex  (o pdflatex informe.tex)
+% ====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+\pagestyle{plain}
+
+% Todas las cifras numéricas vienen de R (parametros.R):
+\input{../R/calculos/resultados.tex}
+
+\newcommand{\FP}{\text{[F]}}
+\newcommand{\TP}{\text{[T]}}
+
+\title{\textbf{Proyecto Final de Estadística}\\[4pt]
+\large Puntos 5, 6 y 7: parámetros descriptivos, parámetros\\
+poblacionales y distribuciones de probabilidad}
+\author{Luis Mango Ataulfo}
+\date{Análisis de vulnerabilidades CVE (NIST NVD, enero--abril 2024)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Se reportan los puntos 5, 6 y 7 del proyecto sobre la variable
+$X$ = \emph{Base Score} (puntaje CVSS v3.1, escala 0.0--10.0) de
+vulnerabilidades publicadas por el NIST entre enero y abril de 2024. Se trabaja
+con una muestra de $\nMuestra$ observaciones extraída por \textbf{muestreo
+aleatorio simple sin reemplazo} de la población de $\nPob$ registros
+(\texttt{set.seed(42)}, reproducible). \textbf{Todas las fórmulas empleadas provienen exclusivamente del
+formulario del curso \FP} (J.~D.~Fuentes Mora) y de la \textbf{Tabla 4 de
+áreas de curva normal \TP} (R.~E.~Walpole); dicha tabla entrega
+$P(Z>z)$ (área en cola derecha) y, \emph{``para valores negativos de $z$, las
+áreas se encuentran por simetría''}. Todos los cálculos numéricos fueron
+realizados con \texttt{R} en \texttt{R/calculos/parametros.R}, el cual exporta
+las cifras que este documento importa automáticamente.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ====================================================================
+\section{Punto 5. Parámetros descriptivos de la muestra}
+% ====================================================================
+
+Sea $\{x_1,\dots,x_{\nMuestra}\}$ la muestra de tamaño $\nMuestra$ de la
+variable $X$ (Base Score). Se usan las fórmulas del formulario \FP:
+
+\subsection{Medidas de tendencia central (datos no agrupados)}
+
+\[
+\bar{x} = \frac{1}{\nMuestra}\sum_{i=1}^{\nMuestra} x_i
+\qquad\qquad
+\text{Med} = \frac{x_{(n/2)} + x_{(n/2+1)}}{2}\quad (n\ \text{par})
+\]
+
+\subsection{Amplitud de intervalos (datos continuos)}
+
+Para agrupar los datos se usan las fórmulas del formulario \FP:
+\[
+R = x_{\max}-x_{\min},
+\qquad
+k = 1 + 3{,}322\log_{10}(n),
+\qquad
+A = \frac{R}{k},
+\qquad
+m_i = \frac{L_i+L_s}{2}
+\]
+Con la muestra: $x_{\min}=\xDatosMin$, $x_{\max}=\xDatosMax$, por lo tanto
+\[
+R = \xDatosMax-\xDatosMin = \RTotal,
+\qquad
+k = 1+3{,}322\log_{10}(\nMuestra) = \kClases\ \text{clases},
+\qquad
+A = \frac{\RTotal}{\kClases} = \AClases
+\]
+
+\subsection{Moda (datos agrupados)}
+
+Aplicando la fórmula del formulario sobre los $\kClases$ intervalos de
+amplitud $A=\AClases$:
+\[
+\text{Mod} = L_{\inf} + \frac{d_1}{d_1+d_2}\cdot A,
+\qquad d_1 = f_{\text{mod}} - f_{\text{ant}},
+\qquad d_2 = f_{\text{mod}} - f_{\text{pos}}
+\]
+
+\subsection{Medidas de dispersión (datos no agrupados)}
+
+\[
+s^{2} = \frac{1}{\nMuestra-1}\sum_{i=1}^{\nMuestra}(x_i-\bar{x})^{2},
+\qquad
+s = \sqrt{s^{2}},
+\qquad
+CV = \frac{s}{\bar{x}}\times 100\,\text{\%}
+\]
+
+\subsection{Momentos y coeficientes de forma}
+
+El formulario define los momentos; sobre los momentos centrales de la muestra
+se construyen los coeficientes de sesgo y curtosis:
+\[
+m_k = \frac{1}{\nMuestra}\sum_{i=1}^{\nMuestra}(x_i-\bar{x})^{k}
+\qquad
+\text{Sesgo} = \frac{m_3}{m_2^{3/2}},
+\qquad
+\text{Curtosis} = \frac{m_4}{m_2^{2}},
+\qquad
+\text{Exceso} = \text{Curtosis} - 3
+\]
+
+\subsection{Resultados (calculados en R)}
+
+\begin{table}[h!]
+\centering
+\caption{Parámetros descriptivos de la muestra de Base Score
+($\nMuestra$ vulnerabilidades). Fórmulas del formulario \FP.}
+\medskip
+\begin{tabular}{@{}lc@{\qquad}lc@{}}
+\toprule
+\textbf{Estadístico} & \textbf{Valor} &
+\textbf{Estadístico} & \textbf{Valor} \\
+\midrule
+Media ($\bar{x}$)                & $\mediaM$ &
+Varianza muestral ($s^{2}$)      & $\varM$ \\
+Mediana                          & $\medianaM$ &
+Desv.\ estándar ($s=\sqrt{s^2}$) & $\sdM$ \\
+Moda (agrupados)                 & $\modaM$ &
+$CV = \frac{s}{\bar{x}}\times 100\,\text{\%}$ & $\cvM\,\text{\%}$ \\
+\midrule
+Sesgo $\left(\frac{m_3}{m_2^{3/2}}\right)$ & $\sesgoM$ &
+Curtosis $\left(\frac{m_4}{m_2^{2}}\right)$ & $\curtM$ \\
+Exceso de curtosis               & $\curtExcesoM$ & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Detalle de la moda (fórmula agrupada): el intervalo modal es
+$[\modaLinf,\,\modaLsup)$ con $f_{\text{mod}}=\modaFmod$,
+$f_{\text{ant}}=\modaFant$, $f_{\text{pos}}=\modaFpos$,
+de donde $d_1 = \modaFmod-\modaFant = \modaDuno$,
+$d_2 = \modaFmod-\modaFpos = \modaDdos$ y
+\[
+\text{Mod} = \modaLinf +
+\frac{\modaDuno}{\modaDuno+\modaDdos}\times \AClases = \modaM
+\]
+
+\begin{table}[h!]
+\centering
+\caption{Tabla de frecuencias agrupadas (intervalos de amplitud
+$A=\AClases$, marcas de clase $m_i$). Intervalo modal en negritas.}
+\medskip
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Intervalo} & \textbf{Marca} & \textbf{$f_i$} &
+\textbf{$f_i/n$} & \textbf{$F_i/n$} \\
+\midrule
+\FilasTablaAgr
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Control: la media agrupada $\bar{x}=\sum f_i m_i/n =
+\mediaAgrup$ se aproxima a la media de los datos sin agrupar ($\mediaM$).
+
+\subsection{Interpretación}
+
+\begin{itemize}
+  \item \textbf{Tendencia central:} la media ($\mediaM$) y la mediana
+        ($\medianaM$) son muy próximas, lo que indica una distribución casi
+        simétrica alrededor de un puntaje cercano a $6.5$, de severidad
+        \emph{MEDIA}--\emph{HIGH}. La moda agrupada ($\modaM$) es inferior
+        porque depende del intervalo modal $[\modaLinf,\,\modaLsup)$ y de sus
+        frecuencias vecinas.
+  \item \textbf{Dispersión:} la desviación estándar $s=\sdM$ y un
+        $CV=\cvM\,\text{\%}$ indican dispersión moderada respecto a la media.
+  \item \textbf{Forma:} el sesgo $m_3/m_2^{3/2}=\sesgoM$ es cercano a cero y
+        ligeramente negativo: distribución casi simétrica con mínimo
+        alargamiento de la cola izquierda. La curtosis $\curtM<3$ (exceso
+        $\curtExcesoM<0$) indica una distribución \textbf{platicúrtica}: colas
+        más ligeras y pico más aplanado que la normal.
+  \item \textbf{Nota sobre el tamaño muestral:} al ser una muestra pequeña
+        ($\nMuestra$ observaciones), estos estadísticos son más sensibles a la
+        variabilidad del muestreo que con muestras grandes; la media agrupada
+        ($\mediaAgrup$) confirma la coherencia del agrupamiento.
+\end{itemize}
+
+% ====================================================================
+\section{Punto 6. Parámetros poblacionales vs.\ estadísticos muestrales}
+% ====================================================================
+
+La \textbf{población} son las $\nPob$ vulnerabilidades del archivo de datos.
+La muestra de $\nMuestra$ observaciones se extrajo por \textbf{muestreo
+aleatorio simple sin reemplazo}. Parámetros según el formulario \FP (datos no
+agrupados):
+\[
+\mu = \frac{1}{\nPob}\sum_{i=1}^{\nPob} x_i,
+\qquad
+\sigma^{2} = \frac{1}{\nPob}\sum_{i=1}^{\nPob}(x_i-\mu)^{2},
+\qquad
+\sigma = \sqrt{\sigma^{2}},
+\qquad
+CV = \frac{\sigma}{\mu}\times 100\,\text{\%}
+\]
+
+Los estadísticos muestrales $\bar{x}$, $s^{2}$, $s$ y $CV_m$ son los del
+punto anterior. Para comparar: error absoluto
+$E_{\text{abs}}=|\hat\theta-\theta|$ y error relativo
+$E_{\text{rel}}(\%) = 100\cdot|\hat\theta-\theta|/\theta$.
+
+\begin{table}[h!]
+\centering
+\caption{Comparación entre parámetros poblacionales y estadísticos muestrales
+del Base Score. Fórmulas del formulario \FP.}
+\medskip
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Estadístico} &
+\makecell[c]{\textbf{Poblacional}\\($N=\nPob$)} &
+\makecell[c]{\textbf{Muestral}\\($\nMuestra$ obs.)} &
+\textbf{Error absol.} & \textbf{Error rel.} \\
+\midrule
+Media ($\mu$ / $\bar{x}$)    & $\mediaP$ & $\mediaM$ & $\errAbsMedia$ & $\errRelMedia\,\text{\%}$ \\
+Varianza ($\sigma^2$ / $s^2$) & $\varP$   & $\varM$   & $\errAbsVar$   & $\errRelVar\,\text{\%}$   \\
+Desv.\ estándar ($\sigma$/$s$)& $\sdP$   & $\sdM$    & $\errAbsSD$    & $\errRelSD\,\text{\%}$    \\
+$CV$ (\%)                    & $\cvP$    & $\cvM$    & $\errAbsCV$    & $\errRelCV\,\text{\%}$    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Varianza de la media muestral}
+
+El muestreo es sin reemplazo. En el formulario, el \textbf{factor de
+corrección por población finita} solo aplica
+\emph{``si $n/N > 0{,}05$ (muestreo sin reemplazo)''.}
+Con $n=\nMuestra$ y $N=\nPob$, \CondicionFPC:
+\[
+\FormulaVarXbar
+\]
+\[
+\text{Error estándar de }\bar{X} = \sqrt{\operatorname{Var}(\bar{X})} = \seXbarMedia
+\]
+
+\subsection{Interpretación}
+
+\begin{itemize}
+  \item La media muestral ($\mediaM$) aproxima a la media poblacional
+        ($\mediaP$) con un error relativo de $\errRelMedia\,\text{\%}$; la
+        varianza ($\errRelVar\,\text{\%}$), la desviación estándar
+        ($\errRelSD\,\text{\%}$) y el $CV$ ($\errRelCV\,\text{\%}$) presentan
+        errores moderados, mayores que los de muestras grandes porque
+        $n=\nMuestra$ es una muestra pequeña.
+  \item El error estándar teórico de $\bar X$ es $\seXbarMedia$; la diferencia
+        observada $|\bar{x}-\mu|=\errAbsMedia$ equivale a $\seVsObs$ errores
+        estándar, es decir, menos de un error estándar: pese al tamaño
+        muestral, la muestra aleatoria simple sigue siendo representativa de
+        la población.
+\end{itemize}
+
+% ====================================================================
+\section{Punto 7. Cinco experimentos y sus distribuciones}
+% ====================================================================
+
+Se proponen cinco experimentos con \textbf{cinco distribuciones distintas},
+todas tomadas de la tabla de distribuciones del formulario \FP. Los parámetros
+se estiman con los datos del proyecto.
+
+\begin{table}[h!]
+\centering
+\caption{Resumen de los cinco experimentos (fórmulas del formulario \FP).}
+\medskip
+\begin{tabular}{@{}clll@{}}
+\toprule
+\textbf{\#} & \textbf{Variable aleatoria $X$} &
+\makecell[c]{\textbf{Distribución}} &
+\makecell[c]{\textbf{Parámetros estimados}} \\
+\midrule
+1 & \makecell[l]{\# de vulnerabilidades CRÍTICAS\\entre 10 revisadas al azar}
+   & Binomial            & $n=10,\ p=\expPbin$ \\
+2 & \makecell[l]{\# de vulnerabilidades CRÍTICAS\\publicadas en un día}
+   & Poisson             & $\lambda=\poiLam$ \\
+3 & \makecell[l]{\# de CVEs que hay que revisar\\hasta encontrar el primero CRÍTICO}
+   & Geométrica          & $p=\expPbin$ \\
+4 & \makecell[l]{\# de ataques por red (NETWORK)\\en 20 CVEs sin reemplazo}
+   & Hipergeométrica     & $\hipN,\ \hipK,\ \hipn$ \\
+5 & \makecell[l]{Base Score de una vulnerabilidad\\elegida al azar}
+   & Normal              & $\mu=\mediaM,\ \sigma=\sdM$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Donde $p=\expPbin$ es la proporción poblacional de severidad
+\emph{CRITICAL} y, para el experimento 4, $\hipK$ es el número de
+vulnerabilidades con vector de ataque \emph{NETWORK} dentro de la población de
+$\hipN$ elementos.
+
+\subsection{Experimento 1: Binomial}
+\textbf{Contexto.} Un analista revisa $10$ vulnerabilidades publicadas en el
+periodo, elegidas al azar. Sea $X$ el número de esas vulnerabilidades que
+resultan ser de severidad \emph{CRITICAL}. Cada revisión es un ensayo de
+Bernoulli con probabilidad $p=\expPbin$, independiente dada la gran diferencia
+de tamaños. Según el formulario \FP:
+\[
+p(x) = \binom{n}{x}p^{x}(1-p)^{n-x},\qquad
+X \sim \text{Bin}(n,p),\qquad
+E(X)=np,\qquad \operatorname{Var}(X)=np(1-p)
+\]
+\[
+E(X) = \binE,
+\qquad
+\operatorname{Var}(X) = \binV
+\]
+Probabilidades (con \texttt{dbinom}/\texttt{pbinom} en R):
+\begin{align*}
+P(X=2)     &= \binom{10}{2}(\expPbin)^{2}(1-\expPbin)^{8} = \binPdos \\
+P(X\geq 1) &= 1-(1-\expPbin)^{10} = \binPgeuno
+\end{align*}
+Hay una probabilidad de $\binPgeuno\cdot 100\,\text{\%}$ de encontrar al menos
+una vulnerabilidad crítica entre 10 revisadas.
+
+\subsection{Experimento 2: Poisson}
+\textbf{Contexto.} El periodo cubre $91$ días (01-ene-2024 a 01-abr-2024).
+Sea $X$ el número de vulnerabilidades \emph{CRÍTICAS} publicadas en un día.
+Se trata de un conteo de eventos en un intervalo de tiempo, el caso de uso de
+la Poisson según la tabla de identificación del formulario \FP:
+\[
+p(x) = \frac{e^{-\lambda}\lambda^{x}}{x!},\qquad
+X \sim \text{Poisson}(\lambda),\qquad
+E(X) = \operatorname{Var}(X) = \lambda
+\]
+con $\lambda=\poiLam$ (promedio poblacional de críticas por día):
+\begin{align*}
+P(X=0)     &= e^{-\poiLam} = \poiPcero
+   &&\text{(un día sin vulnerabilidades críticas)}\\
+P(X\geq 2) &= 1-P(X=0)-P(X=1) = \poiPgeDos
+   &&\text{(dos o más críticas en un día)}
+\end{align*}
+
+\subsection{Experimento 3: Geométrica}
+\textbf{Contexto.} Un auditor examina vulnerabilidades una por una hasta
+encontrar la primera de severidad \emph{CRITICAL}. Sea $X$ el número de
+vulnerabilidades que debe revisar hasta el primer éxito; el formulario
+\FP identifica esta distribución como el \emph{``número de pruebas en las que
+ocurre el primer éxito''}, con probabilidad $p=\expPbin$ en cada intento:
+\[
+p(x) = (1-p)^{x-1}p,\qquad
+X \sim \text{Geom}(p),\qquad
+E(X)=\frac{1}{p},\qquad
+\operatorname{Var}(X)=\frac{1-p}{p^{2}}
+\]
+\[
+E(X) = \geoE,
+\qquad
+\operatorname{Var}(X) = \geoV
+\]
+Probabilidades (con \texttt{dgeom}/\texttt{pgeom} en R):
+\begin{align*}
+P(X=6)     &= (1-\expPbin)^{5}\expPbin = \geoPseis
+   &&\text{(la primera crítica aparece en la 6ta.\ revisión)}\\
+P(X\leq 4) &= 1-(1-\expPbin)^{3} = \geoPlecuatro
+   &&\text{(encontrarla dentro de las 4 primeras revisiones)}
+\end{align*}
+
+\subsection{Experimento 4: Hipergeométrica}
+\textbf{Contexto.} De la población de $\hipN$ vulnerabilidades,
+$\hipK$ tienen vector de ataque \emph{NETWORK}. Un grupo selecciona
+$\hipn$ vulnerabilidades \textbf{sin reemplazo}. Sea $X$ el número de esas
+20 explotables por red. El formulario la define como el \emph{``número de
+éxitos en una muestra $n$ tomada de una población $N$ de las cuales $k$ son
+éxitos''}:
+\[
+p(x) = \frac{\binom{\hipK}{x}\binom{\hipN-\hipK}{\hipn-x}}{\binom{\hipN}{\hipn}},
+\qquad
+X \sim \text{Hipergeométrica}(\hipN,\hipK,\hipn)
+\]
+\[
+E(X) = n\frac{K}{N} = \hipE,
+\qquad
+\operatorname{Var}(X)= n\frac{K}{N}\left(1-\frac{K}{N}\right)\frac{N-n}{N-1} = \hipV
+\]
+Probabilidades (con \texttt{dhyper}/\texttt{phyper} en R):
+\begin{align*}
+P(X\geq 18) &= \sum_{k=18}^{20} p(k) = \hipPgeDieciocho
+   &&\text{(que al menos 18 de 20 sean por red)}\\
+P(X=20) &= \frac{\binom{\hipK}{20}}{\binom{\hipN}{20}} = \hipPveinte
+   &&\text{(que las 20 sean por red)}
+\end{align*}
+
+\subsection{Experimento 5: Normal}
+\textbf{Contexto.} Se elige al azar una vulnerabilidad y se mide su Base
+Score. Según el formulario \FP, $X\sim N(\mu,\sigma^{2})$ con densidad
+\[
+f(x) = \frac{1}{\sigma\sqrt{2\pi}}\,
+      e^{-\frac{(x-\mu)^{2}}{2\sigma^{2}}},
+\qquad E(X)=\mu,\quad \operatorname{Var}(X)=\sigma^{2}
+\]
+Se estiman los parámetros con la muestra: $\mu=\mediaM$, $\sigma=\sdM$.
+Con la \textbf{estandarización del formulario} \FP,
+\[
+Z = \frac{X-\mu}{\sigma} \sim N(0,1),
+\qquad
+\Phi(z) = P(Z\leq z)
+\]
+y se resuelve con la \textbf{Tabla 4 \TP}, que entrega $P(Z>z)$ (cola
+derecha); para $z<0$ se usa la simetría: $P(Z\leq -a) = P(Z>a)$.
+
+\medskip
+\textbf{1) $P(6\leq X\leq 8)$.} Estandarizando ambos límites:
+\[
+z_1 = \frac{6-\mediaM}{\sdM} = \normZseis,
+\qquad
+z_2 = \frac{8-\mediaM}{\sdM} = \normZocho
+\]
+\[
+P(6\leq X\leq 8) = \Phi(\normZocho)-\Phi(\normZseis)
+= \left[1-\TP\,P(Z>\normZocho)\right] + \TP\,P(Z>\normZseisAbs)
+\]
+donde se usó la simetría de la Tabla 4:
+$\Phi(\normZseis)=P(Z>\normZseisAbs)$.
+Consultando la Tabla 4: $P(Z>\normZocho)=\normColaZocho$ y
+$P(Z>\normZseisAbs)=\normColaZseis$, de donde
+\[
+P(6\leq X\leq 8) = (1-\normColaZocho)+\normColaZseis = \normPseisOcho
+\]
+
+\medskip
+\textbf{2) $P(X>9)$.} Estandarizando:
+\[
+P(X>9) = P\left(Z > \frac{9-\mediaM}{\sdM}\right)
+= P(Z>\normZnueve) = \probNormMayorNueve
+\]
+con $P(Z>\normZnueve)=\normColaZnueve$ leído en la Tabla 4.
+
+\medskip
+\textbf{3) $P(X<5)$.} Estandarizando (nota: $z$ es negativo, se aplica la
+simetría de la tabla: $P(Z<-\normZcincoAbs)=P(Z>\normZcincoAbs)$):
+\[
+P(X<5) = P\left(Z < \frac{5-\mediaM}{\sdM}\right)
+= P(Z<\normZcinco) = P(Z>\normZcincoAbs) = \probNormMenorCinco
+\]
+con $P(Z>\normZcincoAbs)=\normColaZcinco$ leído en la Tabla 4.
+
+\medskip
+El $\normPseisOcho\cdot 100\,\text{\%}$ de las vulnerabilidades se espera con
+puntaje entre 6 y 8 (severidad \emph{MEDIA}--\emph{HIGH}); solo
+$\probNormMayorNueve\cdot 100\,\text{\%}$ superaría el 9.0 y
+$\probNormMenorCinco\cdot 100\,\text{\%}$ sería inferior a 5.0.
+
+\section*{Fuentes de fórmulas y software}
+\begin{itemize}\itemsep0pt
+  \item[\FP] J.~D.~Fuentes Mora, \emph{Formulario de Probabilidad y
+        Estadística} (medidas de tendencia central, dispersión, momentos,
+        factor de corrección por población finita, tabla de distribuciones y
+        estandarización normal).
+  \item[\TP] R.~E.~Walpole, \emph{Tabla 4: Áreas de curva normal}
+        (probabilidad normal estándar en cola derecha $P(Z>z)$; simetría para
+        $z<0$), en \emph{Introduction to Statistics}, Macmillan, 1968.
+  \item Cálculos: \texttt{R/calculos/parametros.R} exporta las cifras a
+        \texttt{resultados.tex}. Reproducir con:
+\begin{verbatim}
+cd R/calculos && Rscript parametros.R
+cd ../../informe && tectonic informe.tex
+\end{verbatim}
+\end{itemize}
+
+\end{document}

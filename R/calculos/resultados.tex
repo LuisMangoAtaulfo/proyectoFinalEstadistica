@@ -1,0 +1,87 @@
+% ---- Punto 5 (fórmulas del Formulario Fuentes Mora) ----
+\def\FilasTablaAgr{$[2.40,\,3.49)$ & $2.94$ & $2$ & $0.0333$ & $0.0333$ \\ $[3.49,\,4.57)$ & $4.03$ & $6$ & $0.1000$ & $0.1333$ \\ $[4.57,\,5.66)$ & $\mathbf{5.11}$ & $14$ & $0.2333$ & $0.3667$ \\ $[5.66,\,6.74)$ & $6.20$ & $13$ & $0.2167$ & $0.5833$ \\ $[6.74,\,7.83)$ & $7.29$ & $11$ & $0.1833$ & $0.7667$ \\ $[7.83,\,8.91)$ & $8.37$ & $11$ & $0.1833$ & $0.9500$ \\ $[8.91,\,10.00)$ & $9.46$ & $3$ & $0.0500$ & $1.0000$ \\}
+\def\nMuestra{60}
+\def\mediaM{6.5900}
+\def\medianaM{6.4500}
+\def\xDatosMin{2.4}
+\def\xDatosMax{10.0}
+\def\RTotal{7.6000}
+\def\kClases{7}
+\def\AClases{1.0857}
+\def\mediaAgrup{6.3810}
+\def\modaM{5.5365}
+\def\modaLinf{4.57}
+\def\modaLsup{5.66}
+\def\modaFmod{14}
+\def\modaFant{6}
+\def\modaFpos{13}
+\def\modaDuno{8}
+\def\modaDdos{1}
+\def\varM{3.1894}
+\def\sdM{1.7859}
+\def\cvM{27.10}
+\def\sesgoM{-0.0921}
+\def\curtM{2.4461}
+\def\curtExcesoM{-0.5539}
+% ---- Punto 6 (fórmulas del Formulario Fuentes Mora) ----
+\def\nPob{1969}
+\def\mediaP{6.7158}
+\def\varP{3.1216}
+\def\sdP{1.7668}
+\def\cvP{26.31}
+\def\errAbsMedia{0.1258}
+\def\errRelMedia{1.87}
+\def\errAbsVar{0.0678}
+\def\errRelVar{2.17}
+\def\errAbsSD{0.0191}
+\def\errRelSD{1.08}
+\def\errAbsCV{0.79}
+\def\errRelCV{3.01}
+\def\fracMuestral{0.0305}
+\def\correccionFPC{0.9700}
+\def\varXbarMedia{0.0520}
+\def\seXbarMedia{0.2281}
+\def\seVsObs{0.55}
+\newcommand{\CondicionFPC}{\textbf{no} se cumple la condición del
+  formulario ($n/N = \fracMuestral \leq 0{,}05$), por lo que la
+  corrección por población finita \textbf{no aplica} y se usa
+  directamente la fórmula de distribuciones muestrales}
+\newcommand{\FormulaVarXbar}{\operatorname{Var}(\bar{X}) =
+  \frac{\sigma^{2}}{\nMuestra} = \frac{\varP}{\nMuestra} = \varXbarMedia}
+% ---- Punto 7 - Exp. 1: Binomial ----
+\def\expPbin{0.1112}
+\def\binPdos{0.2167}
+\def\binPgeuno{0.6924}
+\def\binE{1.1122}
+\def\binV{0.9885}
+% ---- Punto 7 - Exp. 2: Poisson ----
+\def\poiLam{2.4066}
+\def\poiPcero{0.0901}
+\def\poiPgeDos{0.6930}
+% ---- Punto 7 - Exp. 3: Geométrica ----
+\def\geoPseis{0.0617}
+\def\geoPlecuatro{0.4454}
+\def\geoE{8.9909}
+\def\geoV{71.8448}
+% ---- Punto 7 - Exp. 4: Hipergeométrica ----
+\def\hipN{1969}
+\def\hipK{1399}
+\def\hipn{20}
+\def\hipPgeDieciocho{0.0430}
+\def\hipPveinte{0.0010}
+\def\hipE{14.2103}
+\def\hipV{4.0740}
+% ---- Punto 7 - Exp. 5: Normal (valores de la Tabla 4 de Walpole) ----
+\def\normZseis{-0.33}
+\def\normZseisAbs{0.33}
+\def\normZocho{0.79}
+\def\normZnueve{1.35}
+\def\normZcinco{-0.89}
+\def\normZcincoAbs{0.89}
+\def\normColaZseis{0.3707}
+\def\normColaZocho{0.2148}
+\def\normColaZnueve{0.0885}
+\def\normColaZcinco{0.1867}
+\def\normPseisOcho{0.4145}
+\def\probNormMayorNueve{0.0885}
+\def\probNormMenorCinco{0.1867}
