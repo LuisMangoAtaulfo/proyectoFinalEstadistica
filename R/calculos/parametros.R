@@ -6,7 +6,8 @@
 #   [F] "Formulario de Probabilidad y Estadística" (J. D. Fuentes Mora)
 #   [T] "Tabla 4: Áreas de curva normal" (R. E. Walpole) -> P(Z > z)
 #
-# La muestra es la misma que en script.R (set.seed(42), n = 500).
+# Muestra aleatoria simple sin reemplazo de n = 60 (set.seed(42)).
+# (script.R usa una muestra distinta de n = 500 para el histograma.)
 #
 # Salida: imprime en consola y exporta "resultados.tex" con macros
 # numéricas para el documento LaTeX.
@@ -73,9 +74,11 @@ filas_tabla_agr <- character(length(freqs))
 for (i in seq_along(freqs)) {
   marca <- if (i == i_mod)
     paste0("\\mathbf{", fmt(marcas_clase[i], 2), "}") else fmt(marcas_clase[i], 2)
+  # El último intervalo es cerrado: cut(..., include.lowest = TRUE) incluye x_max
+  cierre <- if (i == length(freqs)) "]" else ")"
   filas_tabla_agr[i] <- sprintf(
-    "$[%.2f,\\,%.2f)$ & $%s$ & $%d$ & $%.4f$ & $%.4f$ \\\\",
-    cortes[i], cortes[i + 1], marca, freqs[i],
+    "$[%.2f,\\,%.2f%s$ & $%s$ & $%d$ & $%.4f$ & $%.4f$ \\\\",
+    cortes[i], cortes[i + 1], cierre, marca, freqs[i],
     freqs[i] / n, cumsum(freqs)[i] / n)
 }
 
@@ -340,6 +343,7 @@ add(paste0("\\def\\binPdos{", fmt(bin_p2), "}"))
 add(paste0("\\def\\binPgeuno{", fmt(bin_pge1), "}"))
 add(paste0("\\def\\binE{", fmt(bin_esp), "}"))
 add(paste0("\\def\\binV{", fmt(bin_var), "}"))
+add(paste0("\\def\\binPgeunoPct{", fmt(100 * bin_pge1, 2), "}"))   # en %
 
 # --- Experimento 2: POISSON ----------------------------------------
 # [F] p(x) = e^(-λ) λ^x / x! ; X ~ Poisson(λ) ; E = Var = λ
@@ -358,7 +362,9 @@ add(paste0("\\def\\poiPgeDos{", fmt(poi_pge2), "}"))
 # [F] p(x) = (1-p)^(x-1) p ; X ~ Geom(p) ; E = 1/p ; Var = (1-p)/p²
 kg       <- 6
 geo_p6   <- (1 - p_crit)^(kg - 1) * p_crit   # P(X = 6)
-geo_ple4 <- pgeom(kg - 2, p_crit)            # P(X <= 4)
+# P(X <= 4) = 1 - (1-p)^4. En R, pgeom() cuenta FRACASOS antes del primer
+# éxito, así que X <= 4 pruebas equivale a <= 3 fracasos -> pgeom(3, p).
+geo_ple4 <- pgeom(3, p_crit)                 # P(X <= 4)
 geo_esp  <- 1 / p_crit
 geo_var  <- (1 - p_crit) / p_crit^2
 cat("--- Exp. 3: GEOMÉTRICA  X ~ Geom(", fmt(p_crit), ") ---\n")
@@ -439,6 +445,10 @@ add(paste0("\\def\\normColaZcinco{", fmt(cola_derecha(abs(round(z_5, 2))), 4), "
 add(paste0("\\def\\normPseisOcho{", fmt(norm_p68_tab), "}"))
 add(paste0("\\def\\probNormMayorNueve{", fmt(norm_p9_tab), "}"))
 add(paste0("\\def\\probNormMenorCinco{", fmt(norm_p5_tab), "}"))
+# Mismas probabilidades expresadas en porcentaje para la interpretación
+add(paste0("\\def\\normPseisOchoPct{", fmt(100 * norm_p68_tab, 2), "}"))
+add(paste0("\\def\\probNormMayorNuevePct{", fmt(100 * norm_p9_tab, 2), "}"))
+add(paste0("\\def\\probNormMenorCincoPct{", fmt(100 * norm_p5_tab, 2), "}"))
 
 # =====================================================================
 # EXPORTAR MACROS PARA LATEX
