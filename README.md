@@ -37,9 +37,11 @@ proyectoFinalEstadistica/
 │   └── calculos/
 │       ├── script.R            # Muestreo, tabla de frecuencias, histograma, polígono y TLC
 │       ├── comandos_basicos.R  # Versión simple de los puntos 2 a 9
+│       ├── graficas_presentacion.R  # Reproduce las 8 gráficas de la presentación
 │       ├── parametros.R        # Puntos 5, 6 y 7: parámetros y distribuciones
 │       ├── resultados.tex      # Macros numéricas exportadas por parametros.R
-│       ├── datos_cve_completos.csv  # Copia del dataset para trabajar en R
+│       ├── datos_cve_completos.csv  # Dataset principal (8,673 registros)
+│       ├── datos_cve_1969.csv       # Población de la presentación (1,969 registros)
 │       ├── tabla_frecuencias.csv    # Tabla de frecuencias exportada (Punto 4)
 │       └── tabla_frecuencias_basica.csv  # Tabla exportada por comandos_basicos.R
 └── README.md
@@ -96,7 +98,14 @@ cd R/calculos
 Rscript script.R            # Tabla de frecuencias, histograma y polígono
 Rscript parametros.R        # Puntos 5, 6 y 7 (exporta resultados.tex)
 Rscript comandos_basicos.R  # Versión simple de los puntos 2 a 9 (solo R base)
+Rscript graficas_presentacion.R  # Las 8 gráficas de la presentación final
 ```
+
+> **Gráficas de la presentación:** `graficas_presentacion.R` usa
+> `datos_cve_1969.csv` (N = 1,969, del 1 al 23 de enero de 2024), que es la
+> población con la que se elaboró la presentación final. Genera las imágenes en
+> `R/calculos/graficas_presentacion/`. El dataset principal de 8,673 registros se
+> conserva para los demás análisis.
 
 > **En RStudio:** puedes abrir `R/calculos/comandos_basicos.R` y darle *Source*
 > aunque la carpeta de trabajo sea la raíz del proyecto: el script busca el CSV
@@ -206,6 +215,7 @@ de las 30 medias muestrales muestra la forma de campana esperada por el TLC.
 | `python/datos_cve_completos.csv` | 8,673 | CSV | Dataset principal con todas las variables |
 | `python/contexto_ataques.csv` | 50 | CSV | Descripciones de ataques (español si existe, si no inglés) |
 | `python/contexto_ataques.json` | 50 | JSON | Descripciones de ataques solo en inglés |
+| `R/calculos/datos_cve_1969.csv` | 1,969 | CSV | Población usada en la presentación final (1–23 enero 2024) |
 | `R/calculos/tabla_frecuencias.csv` | 8 intervalos | CSV | Tabla de frecuencias del Base Score |
 
 ---
