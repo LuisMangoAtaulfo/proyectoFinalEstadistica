@@ -135,18 +135,27 @@ sd(x)                                     # desviación estándar muestral
 
 # ------------------------------------------------------------
 # TEOREMA CENTRAL DEL LÍMITE (TLC)
-# 30 muestreos aleatorios de n = 60; se guardan sus medias
+# 30 muestreos aleatorios de n = 60 (mínimo pedido)
 # ------------------------------------------------------------
+# Cada muestra es aleatoria simple sin reemplazo, de tamaño n = 60.
 set.seed(42)
-medias <- replicate(30, mean(sample(poblacion$Base_Score, 60)))
+medias30 <- replicate(30, mean(sample(poblacion$Base_Score, 60, replace = FALSE)))
 
-mean(medias)          # media de las medias (≈ media poblacional)
-sd(medias)            # desviación de las medias (≈ sigma/√n)
+mean(medias30)        # media de las medias (≈ media poblacional)
+sd(medias30)          # desviación de las medias (≈ sigma/√n)
 sd_p / sqrt(60)       # valor teórico del error estándar
 
-# Histograma de las 30 medias: debe parecerse a una campana
-hist(medias, breaks = 8, freq = FALSE, col = "lightgreen",
-     main = "TLC: 30 medias muestrales (n = 60)",
+# Con solo 30 medias el histograma sale irregular. Para que la
+# campana del TLC se aprecie bien se usan 1000 muestreos.
+set.seed(42)
+medias <- replicate(1000, mean(sample(poblacion$Base_Score, 60)))
+
+mean(medias)          # debe parecerse a la media poblacional
+sd(medias)            # debe parecerse a sigma/√n
+
+# Histograma de las medias: ahora sí se ve la forma de campana
+hist(medias, breaks = 20, freq = FALSE, col = "lightgreen",
+     main = "TLC: 1000 medias muestrales (n = 60)",
      xlab = "Media muestral", ylab = "Densidad")
 curve(dnorm(x, mean(medias), sd(medias)), add = TRUE,
       col = "red", lwd = 2)

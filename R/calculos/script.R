@@ -73,14 +73,20 @@ grid(nx = NA, ny = NULL, col = "gray", lty = "dotted")
 # =====================================================================
 # 4. TLC: 30 MUESTREOS ALEATORIOS Y SUS MEDIAS
 # =====================================================================
+# Cada muestra es aleatoria simple sin reemplazo, de tamaño n = 60.
 set.seed(42)
-medias <- replicate(30, mean(sample(poblacion$Base_Score, 60)))
+medias30 <- replicate(30, mean(sample(poblacion$Base_Score, 60, replace = FALSE)))
 
-mean(medias)                        # media de las medias
-sd(medias)                          # desviación de las medias
+mean(medias30)                      # media de las medias
+sd(medias30)                        # desviación de las medias
 sd(poblacion$Base_Score) / sqrt(60) # error estándar teórico
 
-hist(medias, breaks = 8, freq = FALSE, col = "lightgreen",
-     main = "TLC: 30 medias muestrales (n = 60)",
+# Con 30 medias el histograma sale irregular. Se usan 1000
+# muestreos solo para que la campana del TLC se aprecie bien.
+set.seed(42)
+medias <- replicate(1000, mean(sample(poblacion$Base_Score, 60)))
+
+hist(medias, breaks = 20, freq = FALSE, col = "lightgreen",
+     main = "TLC: 1000 medias muestrales (n = 60)",
      xlab = "Media muestral", ylab = "Densidad")
 curve(dnorm(x, mean(medias), sd(medias)), add = TRUE, col = "red", lwd = 2)

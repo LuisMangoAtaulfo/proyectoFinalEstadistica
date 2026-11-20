@@ -165,8 +165,9 @@ tectonic informe.tex     # o: pdflatex informe.tex
    - Marca de clase de cada intervalo.
 3. **Gráficos:** Se genera el histograma de frecuencias relativas y, en una
    gráfica aparte, el polígono de frecuencias relativas.
-4. **TLC:** Se realizan 30 muestreos aleatorios de n = 60 y se grafica el
-   histograma de sus medias para ilustrar el Teorema Central del Límite.
+4. **TLC:** Se realizan 30 muestreos aleatorios de n = 60 (mínimo pedido) y,
+   para que la campana se aprecie bien en la gráfica, se repiten 1,000
+   muestreos y se grafica el histograma de sus medias.
 
 ### Análisis en R (`R/calculos/parametros.R` → `informe/informe.pdf`)
 
@@ -204,7 +205,7 @@ Tabla 4 de áreas de curva normal** (R. E. Walpole, que entrega `P(Z > z)`):
 sin intervalos vacíos. Se observa que la mayoría de las vulnerabilidades publicadas
 en el periodo analizado se concentran en severidades **MEDIUM** y **HIGH**
 (puntajes entre 4.0 y 8.0), comportamiento típico de los datos CVSS. El histograma
-de las 30 medias muestrales muestra la forma de campana esperada por el TLC.
+de las 1,000 medias muestrales muestra la forma de campana esperada por el TLC.
 
 ---
 
