@@ -55,7 +55,9 @@ sum(is.na(poblacion$Base_Score))   # datos faltantes en la variable
 # ------------------------------------------------------------
 # PUNTO 4. TABLA DE FRECUENCIAS, HISTOGRAMA Y POLÍGONO
 # ------------------------------------------------------------
-cortes <- 0:10               # intervalos [0,1), [1,2), ... [9,10]
+# Cortes desde el mínimo hasta el máximo real: así no quedan
+# intervalos con frecuencia cero que deformen las gráficas.
+cortes <- floor(min(x)):ceiling(max(x))   # ej. 2, 3, ..., 10
 clases <- cut(x, breaks = cortes, right = FALSE, include.lowest = TRUE)
 frec_abs <- table(clases)
 
@@ -67,17 +69,25 @@ tabla <- data.frame(
   Frec_Acumulada   = cumsum(as.numeric(frec_abs)),
   Frec_Rel_Acum    = round(cumsum(as.numeric(frec_abs)) / length(x), 4)
 )
+tabla <- tabla[tabla$Frec_Absoluta > 0, ]   # quitar intervalos vacíos
 print(tabla)
 write.csv(tabla, file.path(carpeta_datos, "tabla_frecuencias_basica.csv"),
           row.names = FALSE)
 
-# Histograma de frecuencias relativas + polígono
-h <- hist(x, breaks = cortes, right = FALSE, plot = FALSE)
+sum(tabla$Frec_Absoluta)   # debe ser igual a length(x)
+
+# Histograma (gráfica sola)
+h <- hist(x, breaks = cortes, right = FALSE, include.lowest = TRUE,
+          plot = FALSE)
 h$counts <- h$counts / length(x)     # convertir a frecuencias relativas
 
-plot(h, col = "steelblue", main = "Base Score (muestra n = 60)",
+plot(h, col = "steelblue", main = "Histograma del Base Score",
      xlab = "Puntaje CVSS", ylab = "Frecuencia relativa")
-lines(h$mids, h$counts, type = "b", col = "red", lwd = 2, pch = 19)
+
+# Polígono de frecuencias (gráfica aparte, sin histograma)
+plot(h$mids, h$counts, type = "b", col = "red", lwd = 2, pch = 19,
+     main = "Polígono de frecuencias relativas",
+     xlab = "Puntaje CVSS", ylab = "Frecuencia relativa")
 
 
 # ------------------------------------------------------------
@@ -121,6 +131,25 @@ sd_p
 mean(x)                                   # media muestral
 var(x)                                    # varianza muestral
 sd(x)                                     # desviación estándar muestral
+
+
+# ------------------------------------------------------------
+# TEOREMA CENTRAL DEL LÍMITE (TLC)
+# 30 muestreos aleatorios de n = 60; se guardan sus medias
+# ------------------------------------------------------------
+set.seed(42)
+medias <- replicate(30, mean(sample(poblacion$Base_Score, 60)))
+
+mean(medias)          # media de las medias (≈ media poblacional)
+sd(medias)            # desviación de las medias (≈ sigma/√n)
+sd_p / sqrt(60)       # valor teórico del error estándar
+
+# Histograma de las 30 medias: debe parecerse a una campana
+hist(medias, breaks = 8, freq = FALSE, col = "lightgreen",
+     main = "TLC: 30 medias muestrales (n = 60)",
+     xlab = "Media muestral", ylab = "Densidad")
+curve(dnorm(x, mean(medias), sd(medias)), add = TRUE,
+      col = "red", lwd = 2)
 
 
 # ------------------------------------------------------------
