@@ -30,7 +30,7 @@ proyectoFinalEstadistica/
 │   ├── script.py               # Descarga la población completa (CVE) desde la API del NIST
 │   ├── script2.py              # Descarga descripciones de ataques (es/en) → CSV
 │   ├── script3.py              # Descarga descripciones en inglés → JSON
-│   ├── datos_cve_completos.csv # Dataset principal (~1,969 registros)
+│   ├── datos_cve_completos.csv # Dataset principal (~8,673 registros)
 │   ├── contexto_ataques.csv    # Descripciones de ataques (español/inglés)
 │   └── contexto_ataques.json   # Descripciones de ataques en formato JSON
 ├── R/
@@ -49,13 +49,13 @@ proyectoFinalEstadistica/
 
 | Área | Lenguaje | Librerías |
 |------|----------|-----------|
-| Extracción de datos | Python 3 | `requests`, `pandas` |
+| Extracción de datos | Python 3 | `requests` |
 | Análisis estadístico | R | Base R (`stats`, `graphics`) |
 
 ### Instalación (Python)
 
 ```bash
-pip install requests pandas
+pip install requests
 ```
 
 ### Instalación (R)
@@ -71,7 +71,9 @@ No se requieren paquetes adicionales; el script usa funciones base de R.
 ```bash
 cd python
 
-# Descarga la población completa (~1,969 CVEs publicados entre enero y abril de 2024)
+# Descarga la población completa (~8,673 CVEs publicados entre enero y abril de 2024)
+# La API del NIST devuelve máximo 2,000 resultados por página, así que el script
+# recorre las ~5 páginas necesarias (8,905 CVEs en el rango, ~8,673 con CVSS v3.1)
 python script.py
 
 # Descripciones de ataques en español/inglés (CSV)
@@ -89,9 +91,16 @@ python script3.py
 
 ```bash
 cd R/calculos
-Rscript script.R      # Tabla de frecuencias, histograma y polígono
-Rscript parametros.R  # Puntos 5, 6 y 7 (exporta resultados.tex)
+Rscript script.R            # Tabla de frecuencias, histograma y polígono
+Rscript parametros.R        # Puntos 5, 6 y 7 (exporta resultados.tex)
 ```
+
+> **Nota:** `parametros_kiss.R` es una versión alternativa de `parametros.R`
+> que sigue el principio KISS: calcula las probabilidades normales del
+> experimento 5 con `pnorm()` de R en lugar de embeber la Tabla 4 de Walpole,
+> y organiza el código en funciones auxiliares documentadas. Ambos scripts
+> exportan el mismo `resultados.tex` (ejecuta `parametros.R` después si
+> quieres volver a los valores resueltos con la tabla).
 
 ### 3. Compilar el informe LaTeX
 
@@ -181,7 +190,7 @@ comportamiento típico de los datos CVSS.
 
 | Archivo | Registros | Formato | Contenido |
 |---------|-----------|---------|-----------|
-| `python/datos_cve_completos.csv` | ~1,969 | CSV | Dataset principal con todas las variables |
+| `python/datos_cve_completos.csv` | 8,673 | CSV | Dataset principal con todas las variables |
 | `python/contexto_ataques.csv` | 50 | CSV | Descripciones de ataques (español si existe, si no inglés) |
 | `python/contexto_ataques.json` | 50 | JSON | Descripciones de ataques solo en inglés |
 | `R/calculos/tabla_frecuencias.csv` | 10 intervalos | CSV | Tabla de frecuencias del Base Score |

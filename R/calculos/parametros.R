@@ -6,7 +6,7 @@
 #   [F] "Formulario de Probabilidad y Estadística" (J. D. Fuentes Mora)
 #   [T] "Tabla 4: Áreas de curva normal" (R. E. Walpole) -> P(Z > z)
 #
-# La muestra es la misma que en script.R (set.seed(42), n = 500).
+# La muestra es la misma que en script.R (set.seed(42), n = 60).
 #
 # Salida: imprime en consola y exporta "resultados.tex" con macros
 # numéricas para el documento LaTeX.
@@ -73,9 +73,11 @@ filas_tabla_agr <- character(length(freqs))
 for (i in seq_along(freqs)) {
   marca <- if (i == i_mod)
     paste0("\\mathbf{", fmt(marcas_clase[i], 2), "}") else fmt(marcas_clase[i], 2)
+  # El último intervalo cierra en x_max (cut con include.lowest = TRUE)
+  cerrado <- if (i == length(freqs)) "]" else ")"
   filas_tabla_agr[i] <- sprintf(
-    "$[%.2f,\\,%.2f)$ & $%s$ & $%d$ & $%.4f$ & $%.4f$ \\\\",
-    cortes[i], cortes[i + 1], marca, freqs[i],
+    "$[%.2f,\\,%.2f%s$ & $%s$ & $%d$ & $%.4f$ & $%.4f$ \\\\",
+    cortes[i], cortes[i + 1], cerrado, marca, freqs[i],
     freqs[i] / n, cumsum(freqs)[i] / n)
 }
 
@@ -358,7 +360,10 @@ add(paste0("\\def\\poiPgeDos{", fmt(poi_pge2), "}"))
 # [F] p(x) = (1-p)^(x-1) p ; X ~ Geom(p) ; E = 1/p ; Var = (1-p)/p²
 kg       <- 6
 geo_p6   <- (1 - p_crit)^(kg - 1) * p_crit   # P(X = 6)
-geo_ple4 <- pgeom(kg - 2, p_crit)            # P(X <= 4)
+# [F] P(X <= 4) = 1 - (1-p)^4
+# pgeom cuenta FRACASOS antes del primer éxito: X <= 4 revisions
+# equivale a <= 3 fracasos, por eso se usa pgeom(3, p)
+geo_ple4 <- pgeom(3, p_crit)                 # P(X <= 4)
 geo_esp  <- 1 / p_crit
 geo_var  <- (1 - p_crit) / p_crit^2
 cat("--- Exp. 3: GEOMÉTRICA  X ~ Geom(", fmt(p_crit), ") ---\n")

@@ -1,5 +1,6 @@
+import csv
+
 import requests
-import pandas as pd
 
 # 1. Configuración de la petición a la API
 url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
@@ -48,21 +49,21 @@ if response.status_code == 200:
             "Descripcion": descripcion_final
         })
 
-    # 3. Guardar en un DataFrame
-    df_descripciones = pd.DataFrame(contexto_ataques)
-
-    # 4. Mostrar en pantalla los primeros 3 para que los leas ahora mismo
+    # 3. Mostrar en pantalla los primeros 3 para que los leas ahora mismo
     print("--- MUESTRA DE 3 ATAQUES ---")
-    for index, row in df_descripciones.head(3).iterrows():
-        print(f"\nID del Ataque: {row['CVE_ID']}")
-        print(f"Idioma: {row['Idioma']}")
-        print(f"Descripción: {row['Descripcion']}")
+    for fila in contexto_ataques[:3]:
+        print(f"\nID del Ataque: {fila['CVE_ID']}")
+        print(f"Idioma: {fila['Idioma']}")
+        print(f"Descripción: {fila['Descripcion']}")
         print("-" * 50)
 
-    # 5. Exportar todo a CSV
+    # 4. Exportar todo a CSV
     nombre_archivo = "contexto_ataques.csv"
-    df_descripciones.to_csv(nombre_archivo, index=False, encoding='utf-8')
-    print(f"\n¡Listo! Se guardaron {len(df_descripciones)} descripciones en '{nombre_archivo}'.")
+    with open(nombre_archivo, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.DictWriter(archivo, fieldnames=["CVE_ID", "Idioma", "Descripcion"])
+        escritor.writeheader()
+        escritor.writerows(contexto_ataques)
+    print(f"\n¡Listo! Se guardaron {len(contexto_ataques)} descripciones en '{nombre_archivo}'.")
 
 else:
     print(f"Error {response.status_code}: No se pudieron obtener los datos.")

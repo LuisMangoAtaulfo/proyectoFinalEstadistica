@@ -27,6 +27,11 @@
 \newcommand{\FP}{\text{[F]}}
 \newcommand{\TP}{\text{[T]}}
 
+% Convierte un decimal (p. ej. 0.6754) en porcentaje legible (67.54 %)
+\makeatletter
+\newcommand{\pct}[1]{\text{\strip@pt\dimexpr 100pt*#1\relax\,\%}}
+\makeatother
+
 \title{\textbf{Proyecto Final de Estadística}\\[4pt]
 \large Puntos 5, 6 y 7: parámetros descriptivos, parámetros\\
 poblacionales y distribuciones de probabilidad}
@@ -330,7 +335,7 @@ Probabilidades (con \texttt{dbinom}/\texttt{pbinom} en R):
 P(X=2)     &= \binom{10}{2}(\expPbin)^{2}(1-\expPbin)^{8} = \binPdos \\
 P(X\geq 1) &= 1-(1-\expPbin)^{10} = \binPgeuno
 \end{align*}
-Hay una probabilidad de $\binPgeuno\cdot 100\,\text{\%}$ de encontrar al menos
+Hay una probabilidad de $\pct{\binPgeuno}$ de encontrar al menos
 una vulnerabilidad crítica entre 10 revisadas.
 
 \subsection{Experimento 2: Poisson}
@@ -372,7 +377,7 @@ Probabilidades (con \texttt{dgeom}/\texttt{pgeom} en R):
 \begin{align*}
 P(X=6)     &= (1-\expPbin)^{5}\expPbin = \geoPseis
    &&\text{(la primera crítica aparece en la 6ta.\ revisión)}\\
-P(X\leq 4) &= 1-(1-\expPbin)^{3} = \geoPlecuatro
+P(X\leq 4) &= 1-(1-\expPbin)^{4} = \geoPlecuatro
    &&\text{(encontrarla dentro de las 4 primeras revisiones)}
 \end{align*}
 
@@ -409,7 +414,11 @@ f(x) = \frac{1}{\sigma\sqrt{2\pi}}\,
       e^{-\frac{(x-\mu)^{2}}{2\sigma^{2}}},
 \qquad E(X)=\mu,\quad \operatorname{Var}(X)=\sigma^{2}
 \]
-Se estiman los parámetros con la muestra: $\mu=\mediaM$, $\sigma=\sdM$.
+A diferencia de los experimentos 1--4, que usan parámetros poblacionales
+($p$, $\lambda$, $N$ y $K$), aquí la normal modela el Base Score de una
+vulnerabilidad cualquiera y sus parámetros se estiman con los estadísticos
+del punto 5 (estimadores insesgados y consistentes):
+$\mu=\mediaM$, $\sigma=\sdM$.
 Con la \textbf{estandarización del formulario} \FP,
 \[
 Z = \frac{X-\mu}{\sigma} \sim N(0,1),
@@ -428,14 +437,14 @@ z_2 = \frac{8-\mediaM}{\sdM} = \normZocho
 \]
 \[
 P(6\leq X\leq 8) = \Phi(\normZocho)-\Phi(\normZseis)
-= \left[1-\TP\,P(Z>\normZocho)\right] + \TP\,P(Z>\normZseisAbs)
+= \left[1-\TP\,P(Z>\normZocho)\right] - \TP\,P(Z>\normZseisAbs)
 \]
 donde se usó la simetría de la Tabla 4:
 $\Phi(\normZseis)=P(Z>\normZseisAbs)$.
 Consultando la Tabla 4: $P(Z>\normZocho)=\normColaZocho$ y
 $P(Z>\normZseisAbs)=\normColaZseis$, de donde
 \[
-P(6\leq X\leq 8) = (1-\normColaZocho)+\normColaZseis = \normPseisOcho
+P(6\leq X\leq 8) = (1-\normColaZocho)-\normColaZseis = \normPseisOcho
 \]
 
 \medskip
@@ -456,10 +465,10 @@ P(X<5) = P\left(Z < \frac{5-\mediaM}{\sdM}\right)
 con $P(Z>\normZcincoAbs)=\normColaZcinco$ leído en la Tabla 4.
 
 \medskip
-El $\normPseisOcho\cdot 100\,\text{\%}$ de las vulnerabilidades se espera con
+El $\pct{\normPseisOcho}$ de las vulnerabilidades se espera con
 puntaje entre 6 y 8 (severidad \emph{MEDIA}--\emph{HIGH}); solo
-$\probNormMayorNueve\cdot 100\,\text{\%}$ superaría el 9.0 y
-$\probNormMenorCinco\cdot 100\,\text{\%}$ sería inferior a 5.0.
+$\pct{\probNormMayorNueve}$ superaría el 9.0 y
+$\pct{\probNormMenorCinco}$ sería inferior a 5.0.
 
 \section*{Fuentes de fórmulas y software}
 \begin{itemize}\itemsep0pt
