@@ -3,14 +3,31 @@
 # Variable de estudio: Base_Score (puntaje CVSS de un CVE)
 #
 # Solo se usa R base: nada de paquetes ni funciones propias.
-# Ejecutar desde esta carpeta:   Rscript comandos_basicos.R
+#
+# Se puede ejecutar desde RStudio sin importar la carpeta de trabajo:
+#   - desde R/calculos:  Rscript comandos_basicos.R
+#   - desde la raíz del repo, o abriendo el archivo en RStudio.
 # ============================================================
 
 
 # ------------------------------------------------------------
 # PUNTO 2. POBLACIÓN Y MUESTRA
 # ------------------------------------------------------------
-poblacion <- read.csv("datos_cve_completos.csv")
+# En RStudio: usar la carpeta donde está este script
+if (requireNamespace("rstudioapi", quietly = TRUE) &&
+    rstudioapi::isAvailable()) {
+  archivo <- rstudioapi::getSourceEditorContext()$path
+  if (nzchar(archivo)) setwd(dirname(archivo))
+}
+
+# Buscar el CSV en las ubicaciones normales del proyecto
+ruta <- "datos_cve_completos.csv"                       # si estás en R/calculos
+if (!file.exists(ruta)) ruta <- "R/calculos/datos_cve_completos.csv"      # si estás en la raíz
+if (!file.exists(ruta)) ruta <- "../R/calculos/datos_cve_completos.csv"   # si estás en informe/
+if (!file.exists(ruta)) stop("No se encontró datos_cve_completos.csv")
+
+poblacion <- read.csv(ruta)
+carpeta_datos <- dirname(ruta)   # para guardar las salidas junto al CSV
 
 nrow(poblacion)              # N = tamaño de la población
 names(poblacion)             # variables del archivo
@@ -51,7 +68,8 @@ tabla <- data.frame(
   Frec_Rel_Acum    = round(cumsum(as.numeric(frec_abs)) / length(x), 4)
 )
 print(tabla)
-write.csv(tabla, "tabla_frecuencias_basica.csv", row.names = FALSE)
+write.csv(tabla, file.path(carpeta_datos, "tabla_frecuencias_basica.csv"),
+          row.names = FALSE)
 
 # Histograma de frecuencias relativas + polígono
 h <- hist(x, breaks = cortes, right = FALSE, plot = FALSE)
