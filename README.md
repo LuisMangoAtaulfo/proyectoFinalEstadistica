@@ -35,11 +35,13 @@ proyectoFinalEstadistica/
 │   └── contexto_ataques.json   # Descripciones de ataques en formato JSON
 ├── R/
 │   └── calculos/
-│       ├── script.R            # Muestreo, tabla de frecuencias, histograma y polígono
+│       ├── script.R            # Muestreo, tabla de frecuencias, histograma, polígono y TLC
+│       ├── comandos_basicos.R  # Versión simple de los puntos 2 a 9
 │       ├── parametros.R        # Puntos 5, 6 y 7: parámetros y distribuciones
 │       ├── resultados.tex      # Macros numéricas exportadas por parametros.R
 │       ├── datos_cve_completos.csv  # Copia del dataset para trabajar en R
-│       └── tabla_frecuencias.csv    # Tabla de frecuencias exportada
+│       ├── tabla_frecuencias.csv    # Tabla de frecuencias exportada (Punto 4)
+│       └── tabla_frecuencias_basica.csv  # Tabla exportada por comandos_basicos.R
 └── README.md
 ```
 
@@ -147,12 +149,15 @@ tectonic informe.tex     # o: pdflatex informe.tex
 1. **Muestreo:** Se extrae una muestra aleatoria simple de **n = 500** registros de la
    población (con `set.seed(42)` para que el resultado sea reproducible).
 2. **Tabla de frecuencias:** Se construye la distribución del `Base Score` en
-   intervalos de anchura 1 ( `[0,1)`, `[1,2)`, … `[9,10)` ), calculando:
+   intervalos de anchura 1, desde el mínimo hasta el máximo observado
+   (`[2,3)`, `[3,4)`, … `[9,10]`), descartando los intervalos vacíos, y se calcula:
    - Frecuencia absoluta y relativa.
    - Frecuencias absoluta y relativa acumuladas.
    - Marca de clase de cada intervalo.
-3. **Gráficos:** Se genera un histograma de frecuencias relativas con el polígono
-   de frecuencias superpuesto.
+3. **Gráficos:** Se genera el histograma de frecuencias relativas y, en una
+   gráfica aparte, el polígono de frecuencias relativas.
+4. **TLC:** Se realizan 30 muestreos aleatorios de n = 60 y se grafica el
+   histograma de sus medias para ilustrar el Teorema Central del Límite.
 
 ### Análisis en R (`R/calculos/parametros.R` → `informe/informe.pdf`)
 
@@ -186,10 +191,11 @@ Tabla 4 de áreas de curva normal** (R. E. Walpole, que entrega `P(Z > z)`):
 
 ### Resultado
 
-`script.R` genera en pantalla el histograma con el polígono de frecuencias superpuesto.
-Se observa que la mayoría de las vulnerabilidades publicadas en el periodo analizado
-se concentran en severidades **MEDIUM** y **HIGH** (puntajes entre 4.0 y 8.0),
-comportamiento típico de los datos CVSS.
+`script.R` genera el histograma y el polígono de frecuencias en gráficas separadas,
+sin intervalos vacíos. Se observa que la mayoría de las vulnerabilidades publicadas
+en el periodo analizado se concentran en severidades **MEDIUM** y **HIGH**
+(puntajes entre 4.0 y 8.0), comportamiento típico de los datos CVSS. El histograma
+de las 30 medias muestrales muestra la forma de campana esperada por el TLC.
 
 ---
 
@@ -200,7 +206,7 @@ comportamiento típico de los datos CVSS.
 | `python/datos_cve_completos.csv` | 8,673 | CSV | Dataset principal con todas las variables |
 | `python/contexto_ataques.csv` | 50 | CSV | Descripciones de ataques (español si existe, si no inglés) |
 | `python/contexto_ataques.json` | 50 | JSON | Descripciones de ataques solo en inglés |
-| `R/calculos/tabla_frecuencias.csv` | 10 intervalos | CSV | Tabla de frecuencias del Base Score |
+| `R/calculos/tabla_frecuencias.csv` | 8 intervalos | CSV | Tabla de frecuencias del Base Score |
 
 ---
 
