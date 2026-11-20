@@ -93,7 +93,14 @@ python script3.py
 cd R/calculos
 Rscript script.R            # Tabla de frecuencias, histograma y polígono
 Rscript parametros.R        # Puntos 5, 6 y 7 (exporta resultados.tex)
+Rscript comandos_basicos.R  # Versión simple de los puntos 2 a 9 (solo R base)
 ```
+
+> **En RStudio:** puedes abrir `R/calculos/comandos_basicos.R` y darle *Source*
+> aunque la carpeta de trabajo sea la raíz del proyecto: el script busca el CSV
+> automáticamente. Para los demás scripts, usa
+> *Session → Set Working Directory → To Source File Location* o ejecútalos con
+> `Rscript` desde `R/calculos`.
 
 > **Nota:** `parametros_kiss.R` es una versión alternativa de `parametros.R`
 > que sigue el principio KISS: calcula las probabilidades normales del
